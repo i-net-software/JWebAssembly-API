@@ -1,0 +1,28 @@
+plugins {
+    id "com.moowork.node" version "1.2.0"
+    id 'com.github.kt3k.coveralls' version '2.8.2' // Coverage
+}
+
+apply plugin: 'java'
+
+group 'de.inetsoftware.jwebassembly'
+version = '0.1'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile     'com.google.code.findbugs:jsr305:3.0.1'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'src'
+        }
+    }
+}
