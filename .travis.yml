@@ -1,1 +1,15 @@
 language: java
+
+deploy:
+  # deploy to Github
+  provider: releases
+  api_key:
+    secure: a4iPNWvd9I09Qv/ld8dyWx/GveraMARYRzXPxlhZ+bggjgU5lgXfWNpgX83TiFh2Rrd7nq0PVscc8ffyRGUbXs7KrA2VC/fqWD6I5pJ6ny2XrITNrHgnWj5FZoMuBL/E0XWzdSYXN/Xn/OYXYSxv6KX3OVGAk1OqtvAq0KgR59GAp9JP0wuI0gQzj+oIZH+Mq2S+7zWGyIbMMkLDORPVXX571plqPs1p70Dg9s7BkREVS3ENoA872KSP8uCTen6lE4ogGoQa/rZRXtg+C0iIZNC6McVaVgTqiUDOGSDGocoSQxgEhV89vjsNXcGm6Evu6O680e1gXLgRaOKUEjumtksozqo92774zrUPw4GsB31VVT5NIXwxSTqSTu3JvXsqbNwt0r7JsPmcJZsjtk2kH3uggFPsGrcmy97cCOCNulZtt3hTUgH+U4zwh5cXOR8L+x1VY2PKdnKRKd1JKAuBMsudJNpObK+RDGSs+GjVyspTw6kOVlYq6RRdHBs4ds2TGANiuQeJjKErJV3eU0nNlJIT4hOl6c8ZgckaiP2W7uYiQyIpCMd/4ep2iUsS9AK4YzGW1Bz5dFq+fifs9GW6Mo+7gu/p7EVFf6+RaQCQJ2B895AnUGaG9e4aBSJv15BtDU3N0/Rbn/pOqvOX1XNyD5a+QQeFM2UWxrnhKxXPHVE=
+  file_glob: true
+  file: ./build/libs/jwebassembly-api-*.jar
+  skip_cleanup: true
+  overwrite: true
+  on:
+    repo: i-net-software/JWebAssembly-API
+    tags: true
+    condition: $DEPLOY = true
