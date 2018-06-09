@@ -1,6 +1,11 @@
-apply plugin: 'java'
+plugins {
+    id "com.jfrog.bintray" version "1.8.0"
+}
 
-group 'de.inetsoftware.jwebassembly'
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+
+group 'de.inetsoftware'
 version = '0.1'
 
 repositories {
@@ -8,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    compile     'com.google.code.findbugs:jsr305:3.0.1'
+    compileOnly     'com.google.code.findbugs:jsr305:3.0.1'
 }
 
 sourceSets {
@@ -24,7 +29,7 @@ sourceSets {
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
-    from sourceSets.main.allSource
+    from sourceSets.main.java
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -40,4 +45,52 @@ build {
 artifacts {
     archives sourcesJar
     archives javadocJar
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['JWebAssemblyPublication']
+    publish = true
+    override = true
+    pkg {
+        repo = 'OSS'
+        userOrg = 'i-net-software'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/i-net-software'
+        name = group + '.' + rootProject.name
+        version { 
+            released = new Date()
+        }
+    }
+}
+
+publishing {
+    publications {
+        JWebAssemblyPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('name', 'JWebAssembly-API')
+                root.appendNode('description', 'The API for using WebAssembly features in your Java classes.')
+                root.appendNode('url', 'https://github.com/i-net-software/JWebAssembly-API')
+
+                def node = root.appendNode('developers').appendNode( 'developer' )
+                node.appendNode( 'id', 'Horcrux7' )
+                node.appendNode( 'name', 'Volker Berlin' )
+                node.appendNode( 'email', 'vberlin@inetsoftware.de' )
+                node.appendNode( 'organization', 'i-net software' )
+                node.appendNode( 'organizationUrl', 'https://www.inetsoftware.de' )
+
+                node = root.appendNode('scm')
+                node.appendNode( 'connection', 'scm:git:git@github.com:i-net-software/JWebAssembly-API.git' )
+                node.appendNode( 'developerConnection', 'scm:git:git@github.com:i-net-software/JWebAssembly-API.git' )
+                node.appendNode( 'url', 'https://github.com/i-net-software/JWebAssembly-API' )
+
+                root.children().last()
+            }
+        }
+    }
 }
