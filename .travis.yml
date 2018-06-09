@@ -14,4 +14,4 @@ deploy:
     tags: true
 
 after_deploy:
-  - ./gradlew bintrayUpload
+  - gradle bintrayUpload
