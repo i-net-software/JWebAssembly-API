@@ -6,6 +6,7 @@ apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
 group 'de.inetsoftware'
+archivesBaseName = 'jwebassembly-api'
 version = '0.1'
 
 repositories {
@@ -58,7 +59,7 @@ bintray {
         userOrg = 'i-net-software'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/i-net-software'
-        name = group + '.' + rootProject.name
+        name = group + '.' + archivesBaseName
         version { 
             released = new Date()
         }
@@ -71,6 +72,7 @@ publishing {
             from components.java
             artifact sourcesJar
             artifact javadocJar
+            artifactId archivesBaseName
             pom.withXml {
                 def root = asNode()
                 root.appendNode('name', 'JWebAssembly-API')
