@@ -27,7 +27,7 @@ class ReplacementForThrowable {
     /**
      * Replacement for the default constructor of Throwable
      */
-    @Replace( className = "java/lang/Throwable", methodName = "<init>", signature = "()V" )
+    @Replace( "java/lang/Throwable.<init>()V" )
     ReplacementForThrowable() {
         // nothing
     }

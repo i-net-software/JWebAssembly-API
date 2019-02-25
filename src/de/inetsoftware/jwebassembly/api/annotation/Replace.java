@@ -30,26 +30,8 @@ import java.lang.annotation.Target;
 public @interface Replace {
 
     /**
-     * The class name of the method that should be replaced. for example "java/lang/Throwable"
-     * 
-     * @return the class name
+     * The full signature of a method that should be replaced like "java/lang/Throwable.printStackTrace()V"
+     * @return the signature
      */
-    String className();
-
-    /**
-     * The method name of the method that should be replaced. If you want replace a constructor then you can use "<init>".
-     * 
-     * @return the class name
-     */
-    String methodName();
-
-    /**
-     * Override the Java signature to support more as one return parameter. If you use this then you can't use it
-     * anymore in Java code directly. It is recommended to use this only with the modifier native.
-     * <p>
-     * Samples: "(I)II" or "()V"
-     * 
-     * @return optional Java method signature.
-     */
-    String signature();
+    String value();
 }
