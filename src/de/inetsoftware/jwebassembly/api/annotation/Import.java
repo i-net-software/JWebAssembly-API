@@ -20,11 +20,34 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.CLASS)
-@Target(ElementType.METHOD)
+/**
+ * Mark a function as an import from host environment/JavaScript.
+ * 
+ * @author Volker Berlin
+ *
+ */
+@Retention( RetentionPolicy.CLASS )
+@Target( ElementType.METHOD )
 public @interface Import {
 
+    /**
+     * the module/object name of the import.
+     * 
+     * @return the module name
+     */
     String module();
 
+    /**
+     * The function name in the scope of the module.
+     * 
+     * @return the name
+     */
     String name();
+
+    /**
+     * The JavaScript replacement. If empty then there must be a same naming object in JavaScript.
+     * 
+     * @return JavaScript replacement. This is the body of the function.
+     */
+    String js() default "";
 }
