@@ -144,7 +144,6 @@ class ReplacementForMath {
         return 0; // for Java compiler
     }
 
-
     /**
      * Replacement for {@link Math#sqrt(double)}
      * 
@@ -160,4 +159,73 @@ class ReplacementForMath {
         return 0; // for Java compiler
     }
 
+    /**
+     * Replacement for {@link Math#cbrt(double)}
+     * 
+     * @param x
+     *            the value.
+     * @return the cube root of x
+     */
+    @Replace( "java/lang/Math.cbrt(D)D" )
+    @Import( module = "Math", name = "cbrt" )
+    static double cbrt( double x ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#IEEEremainder(double,double)}
+     * 
+     * @param   f1   the dividend.
+     * @param   f2   the divisor.
+     * @return  the remainder when f1 is divided by f2.
+     */
+    @Replace( "java/lang/Math.IEEEremainder(DD)D" )
+    static double IEEEremainder( double f1, double f2 ) {
+        return f1 - (f2 * Math.rint(f1 / f2) );
+    }
+
+    /**
+     * Replacement for {@link Math#ceil(double)}
+     * 
+     * @param x
+     *            the value.
+     * @return the smallest (closest to negative infinity) integer value
+     */
+    @Replace( "java/lang/Math.ceil(D)D" )
+    @WasmTextCode( "local.get 0 " //
+                    + "f64.ceil " //
+                    + "return" )
+    static double ceil( double x ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#floor(double)}
+     * 
+     * @param x
+     *            the value.
+     * @return the largest (closest to positive infinity) integer value
+     */
+    @Replace( "java/lang/Math.floor(D)D" )
+    @WasmTextCode( "local.get 0 " //
+                    + "f64.floor " //
+                    + "return" )
+    static double floor( double x ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#rint(double)}
+     * 
+     * @param x
+     *            the value.
+     * @return the closest floating-point integer value
+     */
+    @Replace( "java/lang/Math.rint(D)D" )
+    @WasmTextCode( "local.get 0 " //
+                    + "f64.nearest " //
+                    + "return" )
+    static double rint( double x ) {
+        return 0; // for Java compiler
+    }
 }
