@@ -228,4 +228,33 @@ class ReplacementForMath {
     static double rint( double x ) {
         return 0; // for Java compiler
     }
+
+    /**
+     * Replacement for {@link Math#atan2(double, double)}
+     * 
+     * @param y
+     *            the ordinate coordinate
+     * @param x
+     *            the abscissa coordinate
+     * @return the theta component of the point(r, theta)in polar coordinates that corresponds to the point(x, y) in
+     *         Cartesian coordinates.
+     */
+    @Replace( "java/lang/Math.atan2(DD)D" )
+    @Import( module = "Math", name = "atan2" )
+    static double atan2( double y, double x ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#pow(double, double)}
+     * 
+     * @param   a   the base.
+     * @param   b   the exponent.
+     * @return  the value a<sup>b</sup>.
+      */
+    @Replace( "java/lang/Math.pow(DD)D" )
+    @Import( module = "Math", name = "pow" )
+    static double pow( double a, double b ) {
+        return 0; // for Java compiler
+    }
 }
