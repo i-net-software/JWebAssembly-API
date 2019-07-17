@@ -257,4 +257,45 @@ class ReplacementForMath {
     static double pow( double a, double b ) {
         return 0; // for Java compiler
     }
+
+    /**
+     * Replacement for {@link Math#random()}
+     * 
+     * @return a pseudorandom double greater than or equal 0.0 and less than 1.0.
+     */
+    @Replace( "java/lang/Math.random()D" )
+    @Import( module = "Math", name = "random" )
+    static double random() {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#abs(double)}
+     * 
+     * @param x
+     *            the value.
+     * @return the absolute value of the argument.
+     */
+    @Replace( "java/lang/Math.abs(D)D" )
+    @WasmTextCode( "local.get 0 " //
+                    + "f64.abs " //
+                    + "return" )
+    static double abs( double x ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#abs(float)}
+     * 
+     * @param x
+     *            the value.
+     * @return the absolute value of the argument.
+     */
+    @Replace( "java/lang/Math.abs(F)F" )
+    @WasmTextCode( "local.get 0 " //
+                    + "f32.abs " //
+                    + "return" )
+    static float abs( float x ) {
+        return 0; // for Java compiler
+    }
 }
