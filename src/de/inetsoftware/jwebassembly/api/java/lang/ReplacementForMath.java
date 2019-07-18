@@ -298,4 +298,68 @@ class ReplacementForMath {
     static float abs( float x ) {
         return 0; // for Java compiler
     }
+
+    /**
+     * Replacement for {@link Math#max(double,double)}
+     * 
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return the larger of a and b.
+     */
+    @Replace( "java/lang/Math.max(DD)D" )
+    @WasmTextCode( "local.get 0 " //
+                    + "local.get 1 " //
+                    + "f64.max " //
+                    + "return" )
+    static double max( double a, double b ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#max(float,float)}
+     * 
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return the larger of a and b.
+     */
+    @Replace( "java/lang/Math.max(FF)F" )
+    @WasmTextCode( "local.get 0 " //
+                    + "local.get 1 " //
+                    + "f32.max " //
+                    + "return" )
+    static float max( float a, float b ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#min(double,double)}
+     * 
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return the smaller of a and b.
+     */
+    @Replace( "java/lang/Math.min(DD)D" )
+    @WasmTextCode( "local.get 0 " //
+                    + "local.get 1 " //
+                    + "f64.min " //
+                    + "return" )
+    static double min( double a, double b ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#min(float,float)}
+     * 
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return the smaller of a and b.
+     */
+    @Replace( "java/lang/Math.min(FF)F" )
+    @WasmTextCode( "local.get 0 " //
+                    + "local.get 1 " //
+                    + "f32.min " //
+                    + "return" )
+    static float min( float a, float b ) {
+        return 0; // for Java compiler
+    }
 }
