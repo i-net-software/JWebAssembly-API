@@ -362,4 +362,43 @@ class ReplacementForMath {
     static float min( float a, float b ) {
         return 0; // for Java compiler
     }
+
+    /**
+     * Replacement for {@link Math#sinh(double)}
+     * 
+     * @param x
+     *            The number whose hyperbolic sine is to be returned.
+     * @return The hyperbolic sine of the argument.
+     */
+    @Replace( "java/lang/Math.sinh(D)D" )
+    @Import( module = "Math", name = "sinh" )
+    static double sinh( double x ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#cosh(double)}
+     * 
+     * @param x
+     *            The number whose hyperbolic cosine is to be returned.
+     * @return The hyperbolic cosine of the argument.
+     */
+    @Replace( "java/lang/Math.cosh(D)D" )
+    @Import( module = "Math", name = "cosh" )
+    static double cosh( double x ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#tanh(double)}
+     * 
+     * @param x
+     *            The number whose hyperbolic tangent is to be returned.
+     * @return The hyperbolic tangent of the argument.
+     */
+    @Replace( "java/lang/Math.tanh(D)D" )
+    @Import( module = "Math", name = "tanh" )
+    static double tanh( double x ) {
+        return 0; // for Java compiler
+    }
 }
