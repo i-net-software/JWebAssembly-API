@@ -401,4 +401,78 @@ class ReplacementForMath {
     static double tanh( double x ) {
         return 0; // for Java compiler
     }
+
+    /**
+     * Replacement for {@link Math#hypot(double, double)}
+     * 
+     * @param a
+     *            a value
+     * @param b
+     *            a value
+     * @return sqrt(a<sup>2</sup>+b<sup>2</sup>)
+     */
+    @Replace( "java/lang/Math.hypot(DD)D" )
+    @Import( module = "Math", name = "hypot" )
+    static double hypot( double a, double b ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#expm1(double)}
+     * 
+     * @param x
+     *            the exponent
+     * @return the value e<sup>x</sup> - 1.
+     */
+    @Replace( "java/lang/Math.expm1(D)D" )
+    @Import( module = "Math", name = "expm1" )
+    static double expm1( double a, double b ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#log1p(double)}
+     * 
+     * @param x
+     *            a value
+     * @return the result
+     */
+    @Replace( "java/lang/Math.log1p(D)D" )
+    @Import( module = "Math", name = "log1p" )
+    static double log1p( double a, double b ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#copySign(double,double)}
+     * 
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return the result
+     */
+    @Replace( "java/lang/Math.copySign(DD)D" )
+    @WasmTextCode( "local.get 0 " //
+                    + "local.get 1 " //
+                    + "f64.copysign " //
+                    + "return" )
+    static double copySign( double a, double b ) {
+        return 0; // for Java compiler
+    }
+
+    /**
+     * Replacement for {@link Math#copySign(float,float)}
+     * 
+     * @param   a   an argument.
+     * @param   b   another argument.
+     * @return the result
+     */
+    @Replace( "java/lang/Math.copySign(FF)F" )
+    @WasmTextCode( "local.get 0 " //
+                    + "local.get 1 " //
+                    + "f32.copysign " //
+                    + "return" )
+    static float copySign( float a, float b ) {
+        return 0; // for Java compiler
+    }
+
 }
