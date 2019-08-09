@@ -31,18 +31,18 @@ import java.lang.annotation.Target;
 public @interface Import {
 
     /**
-     * the module/object name of the import.
+     * The module/object name of the import. If not set then the simple class name is used.
      * 
      * @return the module name
      */
-    String module();
+    String module() default "";
 
     /**
-     * The function name in the scope of the module.
+     * The function name in the scope of the module. If not set then the method name is used.
      * 
      * @return the name
      */
-    String name();
+    String name() default "";
 
     /**
      * The JavaScript replacement. If empty then there must be a same naming object in JavaScript.
