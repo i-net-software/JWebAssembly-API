@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package java.util.zip;
+package de.inetsoftware.jwebassembly.api.java.util.zip;
 
 import de.inetsoftware.jwebassembly.api.annotation.Replace;
 
