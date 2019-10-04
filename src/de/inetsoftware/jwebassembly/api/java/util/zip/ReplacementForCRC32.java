@@ -29,7 +29,9 @@ class ReplacementForCRC32 {
      */
     @Replace( "java/util/zip/CRC32.update(II)I" )
     static int update( int crc, int b ) {
-        return 0; // for Java compiler
+        crc ^= -1;
+        crc = (crc >>> 8) ^ makeCRCTable()[(crc ^ b) & 0xFF];
+        return crc ^ -1;
     }
 
     /**
