@@ -33,4 +33,19 @@ class ReplacementForSystem {
     static long currentTimeMillis() {
         return 0; // for Java compiler
     }
+
+    /**
+     * Replacement for {@link System#arraycopy(Object, int, Object, int, int)}
+     */
+    @Import( js = "(src,srcPos,dest,destPos,length) => {" + //
+                    "if(destPos<srcPos){" + //
+                    "for (var i=0;i<length;i++)dest[i+destPos]=src[i+srcPos];" + //
+                    "}else{" + //
+                    "for (var i=length-1;i>=0;i--)dest[i+destPos]=src[i+srcPos];" + //
+                    "}" + //
+                    "}" )
+    @Replace( "java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V" )
+    static void arraycopy() {
+        // nothing
+    }
 }
