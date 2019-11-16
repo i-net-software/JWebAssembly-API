@@ -42,4 +42,13 @@ class ReplacementForString {
     static String init(char[] value) {
         return null; // for compiler
     }
+
+    /**
+     * Replacement for new String(char[],int,int)
+     */
+    @Import( name="newSubChars", js = "(value,off,count)=>String.fromCharCode.apply(null,value.subarray(off,off+count))")
+    @Replace( "java/lang/String.<init>([CII)V" )
+    static String init(char[] value, int offset, int count) {
+        return null; // for compiler
+    }
 }
