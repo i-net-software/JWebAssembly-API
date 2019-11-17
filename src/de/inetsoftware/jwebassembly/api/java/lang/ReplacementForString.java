@@ -28,27 +28,56 @@ class ReplacementForString {
     /**
      * Replacement for new String(byte[])
      */
-    @Import( name="newBytes", js = "(value) => new TextDecoder().decode(value)")
     @Replace( "java/lang/String.<init>([B)V" )
-    static String init(byte[] value) {
-        return null; // for compiler
+    private static String newFromBytes(byte[] bytes) {
+        return newFromSubBytes( bytes, 0, bytes.length );
+    }
+
+    /**
+     * Replacement for new String(byte[],int,int). Decode the bytes with the platform default encoding UTF-8.
+     */
+    @Replace( "java/lang/String.<init>([BII)V" )
+    private static String newFromSubBytes( byte[] bytes, int offset, int length ) {
+        int count = 0;
+        char[] buffer = new char[length - offset];
+        while( offset < length ) {
+            int ch = bytes[offset++] & 0xFF;
+
+            if( ch <= 0x7F ) {
+                //ch = ch;
+            } else if( ch <= 0xDF ) {
+                ch = ((ch & 0x1F) << 6) | (bytes[offset++] & 0x3F);
+            } else if( ch <= 0xEF ) {
+                ch = ((ch & 0x0F) << 12) | ((bytes[offset++] & 0x3F) << 6) | (bytes[offset++] & 0x3F);
+            } else {
+                ch = ((ch & 0x07) << 18) | ((bytes[offset++] & 0x3F) << 12) | ((bytes[offset++] & 0x3F) << 6) | (bytes[offset++] & 0x3F);
+                // high surrogate
+                buffer[count++] = (char)(0xD7C0 + ((ch >> 10) & 0x3ff));
+                // low surrogate
+                ch = 0xDC00 + (ch & 0x3ff);
+            }
+
+            buffer[count++] = (char)ch;
+        }
+
+        return new String( buffer, 0, count );
     }
 
     /**
      * Replacement for new String(char[])
      */
-    @Import( name="newChars", js = "(value)=>String.fromCharCode.apply(null,value)")
+    @Import( name = "newFromChars", js = "(value)=>String.fromCharCode.apply(null,value)" )
     @Replace( "java/lang/String.<init>([C)V" )
-    static String init(char[] value) {
+    static String newFromChars(char[] value) {
         return null; // for compiler
     }
 
     /**
      * Replacement for new String(char[],int,int)
      */
-    @Import( name="newSubChars", js = "(value,off,count)=>String.fromCharCode.apply(null,value.subarray(off,off+count))")
+    @Import( name = "newFromSubChars", js = "(value,off,count)=>String.fromCharCode.apply(null,value.subarray(off,off+count))")
     @Replace( "java/lang/String.<init>([CII)V" )
-    static String init(char[] value, int offset, int count) {
+    static String newFromSubChars(char[] value, int offset, int count) {
         return null; // for compiler
     }
 }
