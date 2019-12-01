@@ -68,13 +68,15 @@ class ReplacementForString {
      */
     @Replace( "java/lang/String.<init>([C)V" )
     static String newFromChars(char[] value) {
-        return newFromSubChars( value, 0, value.length ); // for compiler
+        // does not call the replacement method directly. Else the code will compiled two times.
+        return new String( value, 0, value.length );
     }
 
     /**
      * Replacement for new String(char[],int,int)
+     * If module and name is not set then the original from the replaced method is used.
      */
-    @Import( name = "newFromSubChars", js = "(value,off,count)=>{" + //
+    @Import( module = "StringHelper", name = "newFromSubChars", js = "(value,off,count)=>{" + //
                     "var s='';" + //
                     "for(var i=off;i<off+count;i++){" + //
                     "s+=String.fromCharCode(value[i]);" + //
