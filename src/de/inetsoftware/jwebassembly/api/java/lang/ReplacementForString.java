@@ -66,16 +66,20 @@ class ReplacementForString {
     /**
      * Replacement for new String(char[])
      */
-    @Import( name = "newFromChars", js = "(value)=>String.fromCharCode.apply(null,value)" )
     @Replace( "java/lang/String.<init>([C)V" )
     static String newFromChars(char[] value) {
-        return null; // for compiler
+        return newFromSubChars( value, 0, value.length ); // for compiler
     }
 
     /**
      * Replacement for new String(char[],int,int)
      */
-    @Import( name = "newFromSubChars", js = "(value,off,count)=>String.fromCharCode.apply(null,value.subarray(off,off+count))")
+    @Import( name = "newFromSubChars", js = "(value,off,count)=>{" + //
+                    "var s='';" + //
+                    "for(var i=off;i<off+count;i++){" + //
+                    "s+=String.fromCharCode(value[i]);" + //
+                    "}" + //
+                    "return s}" )
     @Replace( "java/lang/String.<init>([CII)V" )
     static String newFromSubChars(char[] value, int offset, int count) {
         return null; // for compiler
