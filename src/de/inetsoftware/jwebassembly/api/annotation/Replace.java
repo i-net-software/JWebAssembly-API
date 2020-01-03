@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Volker Berlin (i-net software)
+ * Copyright 2019 - 2020 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * @author Volker Berlin
  */
 @Retention( RetentionPolicy.CLASS )
-@Target( {ElementType.METHOD, ElementType.CONSTRUCTOR} )
+@Target( {ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.TYPE } )
 public @interface Replace {
 
     /**
