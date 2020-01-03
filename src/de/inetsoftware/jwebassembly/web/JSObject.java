@@ -15,6 +15,8 @@
  */
 package de.inetsoftware.jwebassembly.web;
 
+import javax.annotation.Nonnull;
+
 import de.inetsoftware.jwebassembly.api.annotation.Import;
 
 /**
@@ -79,7 +81,7 @@ public class JSObject {
      * @return the value of the property
      */
     protected <T> T get( String propName ) {
-        return get0( peer, propName );
+        return get0( peer, domString( propName ) );
     }
 
     /**
@@ -110,6 +112,19 @@ public class JSObject {
      * @return the return value
      */
     protected <T> T invoke( String methodName, Object param1 ) {
-        return invoke1( peer, methodName, param1 );
+        return invoke1( peer, domString( methodName ), param1 );
+    }
+
+    /**
+     * Get the dom string from a java string https://developer.mozilla.org/de/docs/Web/API/DOMString
+     * 
+     * @param str
+     *            the Java string
+     * @return dom string
+     */
+    public static String domString( @Nonnull String str ) {
+        // in pure we return simple the string
+        // in wasm code this method should be replaced
+        return str;
     }
 }
