@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 - 2018 Volker Berlin (i-net software)
+ * Copyright 2017 - 2020 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,20 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.CLASS)
-@Target(ElementType.METHOD)
+/**
+ * Mark a function as an export to host environment/JavaScript.
+ * 
+ * @author Volker Berlin
+ *
+ */
+@Retention( RetentionPolicy.CLASS )
+@Target( ElementType.METHOD )
 public @interface Export {
 
+    /**
+     * The external visible function name. If not set then the method name is used.
+     * 
+     * @return the name
+     */
     String name() default "";
 }
