@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Volker Berlin (i-net software)
+ * Copyright 2020 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,74 +16,50 @@
 package de.inetsoftware.jwebassembly.api.java.lang;
 
 import de.inetsoftware.jwebassembly.api.annotation.Import;
+import de.inetsoftware.jwebassembly.api.annotation.Partial;
 import de.inetsoftware.jwebassembly.api.annotation.Replace;
 
 /**
- * Replacement methods for the class java.lang.String.
+ * Additional methods for the class java.lang.String.
  * 
  * @author Volker Berlin
  */
+@Partial( "java/lang/String" )
 class ReplacementForString {
 
     /**
-     * Replacement for new String(byte[])
+     * hold the DOMString if there is already any
      */
-    @Replace( "java/lang/String.<init>([B)V" )
-    private static String newFromBytes(byte[] bytes) {
-        return newFromSubBytes( bytes, 0, bytes.length );
-    }
+    private Object domStr;
 
     /**
-     * Replacement for new String(byte[],int,int). Decode the bytes with the platform default encoding UTF-8.
+     * Create a DOMString via JavaScript from char array.
      */
-    @Replace( "java/lang/String.<init>([BII)V" )
-    private static String newFromSubBytes( byte[] bytes, int offset, int length ) {
-        int count = 0;
-        char[] buffer = new char[length - offset];
-        while( offset < length ) {
-            int ch = bytes[offset++] & 0xFF;
-
-            if( ch <= 0x7F ) {
-                //ch = ch;
-            } else if( ch <= 0xDF ) {
-                ch = ((ch & 0x1F) << 6) | (bytes[offset++] & 0x3F);
-            } else if( ch <= 0xEF ) {
-                ch = ((ch & 0x0F) << 12) | ((bytes[offset++] & 0x3F) << 6) | (bytes[offset++] & 0x3F);
-            } else {
-                ch = ((ch & 0x07) << 18) | ((bytes[offset++] & 0x3F) << 12) | ((bytes[offset++] & 0x3F) << 6) | (bytes[offset++] & 0x3F);
-                // high surrogate
-                buffer[count++] = (char)(0xD7C0 + ((ch >> 10) & 0x3ff));
-                // low surrogate
-                ch = 0xDC00 + (ch & 0x3ff);
-            }
-
-            buffer[count++] = (char)ch;
-        }
-
-        return new String( buffer, 0, count );
-    }
-
-    /**
-     * Replacement for new String(char[])
-     */
-    @Replace( "java/lang/String.<init>([C)V" )
-    static String newFromChars(char[] value) {
-        // does not call the replacement method directly. Else the code will compiled two times.
-        return new String( value, 0, value.length );
-    }
-
-    /**
-     * Replacement for new String(char[],int,int)
-     * If module and name is not set then the original from the replaced method is used.
-     */
-    @Import( module = "StringHelper", name = "newFromSubChars", js = "(value,off,count)=>{" + //
+    @Import( module = "Web", name = "fromChars", js = "(value)=>{" + //
                     "var s='';" + //
-                    "for(var i=off;i<off+count;i++){" + //
+                    "for(var i=0;i<value.length;i++){" + //
                     "s+=String.fromCharCode(value[i]);" + //
                     "}" + //
                     "return s}" )
-    @Replace( "java/lang/String.<init>([CII)V" )
-    static String newFromSubChars(char[] value, int offset, int count) {
-        return null; // for compiler
+    private static native Object fromChars( char[] value );
+
+    /**
+     * Getter and factory for DOMStrings.
+     * @return the string
+     */
+    @Replace( "de/inetsoftware/jwebassembly/web/JSObject.domString(Ljava/lang/String;)Ljava/lang/String;" )
+    private Object domString() {
+        Object domStr = this.domStr; 
+        if( domStr == null ) {
+            //TODO toCharArray() create a copy which we not need, but it work with Java 8 and 11. A better solution can be a multi release jar file.
+            domStr = fromChars( toCharArray() );
+            this.domStr = domStr;
+        }
+        return domStr;
     }
+
+    /**
+     * Placeholder for existing public method.
+     */
+    native public char[] toCharArray();
 }
