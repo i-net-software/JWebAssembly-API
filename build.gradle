@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     compileOnly     'com.google.code.findbugs:jsr305:3.0.1'
+    compileOnly     'org.ow2.asm:asm:+'
 }
 
 sourceSets {
@@ -32,7 +33,9 @@ jar {
     manifest {
         attributes( 'Implementation-Title': 'JWebAssembly-API',
                     'Implementation-Vendor': 'i-net software',
-                    'Implementation-Version': version)
+                    'Implementation-Version': version,
+                    'Premain-Class': 'de.inetsoftware.jwebassembly.emulator.PremainEmulator',
+        )
     }
 }
 
