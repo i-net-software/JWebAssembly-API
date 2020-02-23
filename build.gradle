@@ -8,6 +8,8 @@ apply plugin: 'maven-publish'
 group 'de.inetsoftware'
 archivesBaseName = 'jwebassembly-api'
 version = '0.2'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     jcenter()
@@ -15,7 +17,18 @@ repositories {
 
 dependencies {
     compileOnly     'com.google.code.findbugs:jsr305:3.0.1'
+
+    // dependencies for the emulator
     compileOnly     'org.ow2.asm:asm:+'
+    def fxVersion = getJavaFxVersion()
+    if( fxVersion > 8 ) { // version 8 is build into the OpenJDK
+        // JavaFX depends the platform and JDK version
+        def platform = getJavaFxPlatform()
+        def modules = ['javafx-base', 'javafx-graphics', 'javafx-web']
+        for (String module : modules) {
+            compileOnly 'org.openjfx:' + module + ':' + fxVersion + '.+:' + platform
+        }
+    }
 }
 
 sourceSets {
@@ -27,6 +40,31 @@ sourceSets {
             srcDir 'src'
         }
     }
+}
+
+/**
+* The String for Javafx classifier
+*/
+def getJavaFxPlatform() {
+    def osname = System.properties['os.name'].toLowerCase()
+    if( osname.contains( 'windows' ) ) {
+        return 'win'
+    } else if( osname.contains( 'mac' ) ) {
+        return 'mac'
+    }
+    return 'linux'
+}
+
+/**
+* The Javafx version that is compatible with the current JDK
+*/
+def getJavaFxVersion() {
+    def fxVersion = org.gradle.util.VersionNumber.parse( System.properties['java.version'] ).getMajor()
+    if( fxVersion > 8 && fxVersion < 11 ) {
+        // There is no version 9 and 10, version 8 is build into the OpenJDK
+        fxVersion = 11
+    }
+    return fxVersion;
 }
 
 jar {
