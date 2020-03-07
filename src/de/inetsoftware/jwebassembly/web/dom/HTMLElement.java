@@ -23,12 +23,36 @@ package de.inetsoftware.jwebassembly.web.dom;
 public class HTMLElement extends Element {
 
     /**
-     * Create a Java instance as wrapper of the JavaScript object.
+     * Create a Java instance as wrapper of the DOM object.
      * 
      * @param peer
-     *            the native JavaScript object
+     *            the native DOM object
      */
     HTMLElement( Object peer ) {
         super( peer );
+    }
+
+    /**
+     * Create a wrapper for a HTML peer element.
+     * 
+     * @param tagName
+     *            the tag name of the element
+     * @param peer
+     *            the native DOM object
+     * @return the wrapper
+     */
+    static HTMLElement createWrapper( String tagName, Object peer ) {
+        switch( tagName ) {
+            case "a":
+                return new HTMLAnchorElement( peer );
+            case "area":
+                return new HTMLAreaElement( peer );
+            case "canvas":
+                return new HTMLCanvasElement( peer );
+            case "div":
+                return new HTMLDivElement( peer );
+            default:
+                return new HTMLElement( peer );
+        }
     }
 }
