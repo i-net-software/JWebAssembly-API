@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Volker Berlin (i-net software)
+ * Copyright 2019 - 2020 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,7 @@ class ReplacementForSystem {
      */
     @Replace( "java/lang/System.currentTimeMillis()J" )
     @Import( module = "System", name = "currentTimeMillis", js = "() => BigInt(Date.now())")
-    static long currentTimeMillis() {
-        return 0; // for Java compiler
-    }
+    static native long currentTimeMillis();
 
     /**
      * Replacement for {@link System#arraycopy(Object, int, Object, int, int)}
@@ -45,7 +43,17 @@ class ReplacementForSystem {
                     "}" + //
                     "}" )
     @Replace( "java/lang/System.arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V" )
-    static void arraycopy() {
-        // nothing
-    }
+    static native void arraycopy();
+
+    /**
+     * Replacement for {@link System#identityHashCode(Object)}
+     */
+    @Import( module = "NonGC", name = "identityHashCode", js = "(o) => {" //
+                    + "var h=o[1];" // 
+                    + "while(h==0){" //
+                    + "o[1]=h=Math.round((Math.random()-0.5)*0xffff);" //
+                    + "}" // 
+                    + "return h}" )
+    @Replace( "java/lang/System.identityHashCode(Ljava/lang/Object;)I" )
+    static native int identityHashCode(Object x);
 }
