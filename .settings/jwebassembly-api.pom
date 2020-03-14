@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.inetsoftware</groupId>
+  <artifactId>jwebassembly-api</artifactId>
+  <version>0.2</version>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>3.0.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>+</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  <name>JWebAssembly-API</name>
+  <description>The API for using WebAssembly features in your Java classes.</description>
+  <url>https://github.com/i-net-software/JWebAssembly-API</url>
+  <developers>
+    <developer>
+      <id>Horcrux7</id>
+      <name>Volker Berlin</name>
+      <email>vberlin@inetsoftware.de</email>
+      <organization>i-net software</organization>
+      <organizationUrl>https://www.inetsoftware.de</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@github.com:i-net-software/JWebAssembly-API.git</connection>
+    <developerConnection>scm:git:git@github.com:i-net-software/JWebAssembly-API.git</developerConnection>
+    <url>https://github.com/i-net-software/JWebAssembly-API</url>
+  </scm>
+</project>
