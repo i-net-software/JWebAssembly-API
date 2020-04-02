@@ -27,6 +27,14 @@ class ReplacementForObject {
     /**
      * Replacement for {@link Object#hashCode()}
      */
+    @Replace( "java/lang/Object.registerNatives()V" )
+    private static void registerNatives() {
+        // nothing
+    }
+
+    /**
+     * Replacement for {@link Object#hashCode()}
+     */
     @Replace( "java/lang/Object.hashCode()I" )
     static int hashCode(Object x) {
         return System.identityHashCode( x );
