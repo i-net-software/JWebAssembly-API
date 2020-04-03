@@ -26,6 +26,14 @@ import de.inetsoftware.jwebassembly.api.annotation.Replace;
 class ReplacementForSystem {
 
     /**
+     * Replacement for System.registerNatives()
+     */
+    @Replace( "java/lang/System.registerNatives()V" )
+    private static void registerNatives() {
+        // nothing
+    }
+
+    /**
      * Replacement for System.currentTimeMillis()
      */
     @Replace( "java/lang/System.currentTimeMillis()J" )
