@@ -37,13 +37,20 @@ class ReplacementForSystem {
      * Replacement for System.currentTimeMillis()
      */
     @Replace( "java/lang/System.currentTimeMillis()J" )
-    @Import( module = "System", name = "currentTimeMillis", js = "() => BigInt(Date.now())")
+    @Import( module = "System", name = "currentTimeMillis", js = "()=>BigInt(Date.now())")
     static native long currentTimeMillis();
+
+    /**
+     * Replacement for System.nanoTime()
+     */
+    @Replace( "java/lang/System.nanoTime()J" )
+    @Import( module = "System", name = "nanoTime", js = "()=>BigInt(Date.now()*1000000)")
+    static native long nanoTime();
 
     /**
      * Replacement for {@link System#arraycopy(Object, int, Object, int, int)}
      */
-    @Import( js = "(src,srcPos,dest,destPos,length) => {" + //
+    @Import( js = "(src,srcPos,dest,destPos,length)=>{" + //
                     "if(destPos<srcPos){" + //
                     "for (var i=0;i<length;i++)dest[i+destPos]=src[i+srcPos];" + //
                     "}else{" + //
@@ -56,7 +63,7 @@ class ReplacementForSystem {
     /**
      * Replacement for {@link System#identityHashCode(Object)}
      */
-    @Import( module = "NonGC", name = "identityHashCode", js = "(o) => {" //
+    @Import( module = "NonGC", name = "identityHashCode", js = "(o)=>{" //
                     + "var h=o[1];" // 
                     + "while(h==0){" //
                     + "o[1]=h=Math.round((Math.random()-0.5)*0xffff);" //
