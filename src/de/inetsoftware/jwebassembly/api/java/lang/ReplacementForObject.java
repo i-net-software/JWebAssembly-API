@@ -15,6 +15,7 @@
  */
 package de.inetsoftware.jwebassembly.api.java.lang;
 
+import de.inetsoftware.jwebassembly.api.annotation.Import;
 import de.inetsoftware.jwebassembly.api.annotation.Replace;
 
 /**
@@ -39,4 +40,11 @@ class ReplacementForObject {
     static int hashCode(Object x) {
         return System.identityHashCode( x );
     }
+
+    /**
+     * Replacement for {@link Object#clone()}
+     */
+    @Import( js="(val)=>Object.assign({},val)")
+    @Replace( "java/lang/Object.clone()Ljava/lang/Object;" )
+    private static native Object clone0();
 }
