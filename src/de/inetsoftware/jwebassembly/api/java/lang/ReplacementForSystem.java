@@ -51,6 +51,8 @@ class ReplacementForSystem {
      * Replacement for {@link System#arraycopy(Object, int, Object, int, int)}
      */
     @Import( js = "(src,srcPos,dest,destPos,length)=>{" + //
+                    "src=src[2];" + //
+                    "dest=dest[2];" + //
                     "if(destPos<srcPos){" + //
                     "for (var i=0;i<length;i++)dest[i+destPos]=src[i+srcPos];" + //
                     "}else{" + //

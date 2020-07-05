@@ -35,10 +35,11 @@ class ReplacementForString {
     /**
      * Create a DOMString via JavaScript from char array.
      */
-    @Import( module = "Web", name = "fromChars", js = "(value)=>{" + //
+    @Import( module = "Web", name = "fromChars", js = "(v)=>{" + //
+                    "v=v[2];" + //
                     "var s='';" + //
-                    "for(var i=0;i<value.length;i++){" + //
-                    "s+=String.fromCharCode(value[i]);" + //
+                    "for(var i=0;i<v.length;i++){" + //
+                    "s+=String.fromCharCode(v[i]);" + //
                     "}" + //
                     "return s}" )
     private static native Object fromChars( char[] value );
