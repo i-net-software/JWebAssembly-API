@@ -18,6 +18,7 @@ package de.inetsoftware.jwebassembly.api.java.lang;
 import de.inetsoftware.jwebassembly.api.annotation.Import;
 import de.inetsoftware.jwebassembly.api.annotation.Partial;
 import de.inetsoftware.jwebassembly.api.annotation.Replace;
+import de.inetsoftware.jwebassembly.web.DOMString;
 
 /**
  * Additional methods for the class java.lang.String.
@@ -30,10 +31,14 @@ class ReplacementForString {
     /**
      * hold the DOMString if there is already any
      */
-    private Object domStr;
+    private DOMString domStr;
 
     /**
      * Create a DOMString via JavaScript from char array.
+     * 
+     * @param value
+     *            the characters of the string
+     * @return the DOMString
      */
     @Import( module = "Web", name = "fromChars", js = "(v)=>{" + //
                     "v=v[2];" + //
@@ -42,15 +47,15 @@ class ReplacementForString {
                     "s+=String.fromCharCode(v[i]);" + //
                     "}" + //
                     "return s}" )
-    private static native Object fromChars( char[] value );
+    private static native DOMString fromChars( char[] value );
 
     /**
      * Getter and factory for DOMStrings.
      * @return the string
      */
-    @Replace( "de/inetsoftware/jwebassembly/web/JSObject.domString(Ljava/lang/String;)Ljava/lang/String;" )
+    @Replace( "de/inetsoftware/jwebassembly/web/JSObject.domString(Ljava/lang/String;)Lde/inetsoftware/jwebassembly/web/DOMString;" )
     private Object domString() {
-        Object domStr = this.domStr; 
+        DOMString domStr = this.domStr; 
         if( domStr == null ) {
             //TODO toCharArray() create a copy which we not need, but it work with Java 8 and 11. A better solution can be a multi release jar file.
             domStr = fromChars( toCharArray() );

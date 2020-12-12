@@ -54,8 +54,20 @@ public class JSObject {
      * @return the value of the property
      */
     @Import( module = WEB, js = "(p)=>window[p]" )
-    protected static native <T> T win_get( String propName );
+    private static native <T> T win_get0( DOMString propName );
 
+    /**
+     * Get a JavaScript property value by name from global variable window.
+     * 
+     * @param <T>
+     *            the return type
+     * @param propName
+     *            the name of the property as DOMString
+     * @return the value of the property
+     */
+    protected static <T> T win_get( @Nonnull String propName ) {
+        return win_get0( domString( propName ) );
+    }
 
     /**
      * Native get a JavaScript property value by name.
@@ -69,7 +81,7 @@ public class JSObject {
      * @return the value of the property
      */
     @Import( module = WEB, js = "(o,p)=>o[p]" )
-    private static native <T> T get0( Object peer, String propName );
+    private static native <T> T get0( Object peer, DOMString propName );
 
     /**
      * Get the value of a property of this object.
@@ -80,7 +92,7 @@ public class JSObject {
      *            the name of the property
      * @return the value of the property
      */
-    protected <T> T get( String propName ) {
+    protected <T> T get( @Nonnull String propName ) {
         return get0( peer, domString( propName ) );
     }
 
@@ -98,7 +110,7 @@ public class JSObject {
      * @return the return value
      */
     @Import( module = WEB, js = "(o,m,p1)=>o[m](p1)" )
-    private static native <T> T invoke1( Object peer, String methodName, Object param1 );
+    private static native <T> T invoke0( Object peer, DOMString methodName, Object param1 );
 
     /**
      * Invoke a JavaScript method with one parameter of this object.
@@ -111,8 +123,8 @@ public class JSObject {
      *            the parameter
      * @return the return value
      */
-    protected <T> T invoke( String methodName, Object param1 ) {
-        return invoke1( peer, domString( methodName ), param1 );
+    protected <T> T invoke( @Nonnull String methodName, Object param1 ) {
+        return invoke0( peer, domString( methodName ), param1 );
     }
 
     /**
@@ -122,9 +134,14 @@ public class JSObject {
      *            the Java string
      * @return dom string
      */
-    public static String domString( @Nonnull String str ) {
+    public static DOMString domString( @Nonnull String str ) {
         // in pure we return simple the string
         // in wasm code this method should be replaced
-        return str;
+        return new DOMString() {
+            @Override
+            public String toString() {
+                return str;
+            }
+        };
     }
 }
