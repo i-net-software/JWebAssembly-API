@@ -113,7 +113,22 @@ public class JSObject {
     private static native <T> T invoke0( Object peer, DOMString methodName, Object param1 );
 
     /**
-     * Invoke a JavaScript method with one parameter of this object.
+     * Invoke a JavaScript method with one string parameter of this object.
+     * 
+     * @param <T>
+     *            the return type
+     * @param methodName
+     *            the method name
+     * @param param1
+     *            the parameter
+     * @return the return value
+     */
+    protected <T> T invoke( @Nonnull String methodName, String param1 ) {
+        return invoke( methodName, domString( param1 ) );
+    }
+
+    /**
+     * Invoke a JavaScript method with one non string parameter of this object.
      * 
      * @param <T>
      *            the return type
