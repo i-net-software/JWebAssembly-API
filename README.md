@@ -10,7 +10,7 @@ This is the API of JWebAssembly. You must add this as a compilation time depende
 
 ```gradle
 repositories {
-    jcenter()
+     mavenCentral()
 }
 dependencies {
     compile 'de.inetsoftware:jwebassembly-api:+'
