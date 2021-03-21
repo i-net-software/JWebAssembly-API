@@ -1,13 +1,12 @@
 plugins {
-    id "com.jfrog.bintray" version "1.8.4"
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
-
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
 
 group 'de.inetsoftware'
 archivesBaseName = 'jwebassembly-api'
-version = '0.3'
+version = '0.4'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -69,7 +68,10 @@ def getJavaFxVersion() {
 
 jar {
     manifest {
-        attributes( 'Implementation-Title': 'JWebAssembly-API',
+        attributes( 'Specification-Title': 'JWebAssembly-API',
+                    'Specification-Vendor': 'i-net software',
+                    'Specification-Version': version,
+                    'Implementation-Title': 'JWebAssembly-API',
                     'Implementation-Vendor': 'i-net software',
                     'Implementation-Version': version,
                     'Premain-Class': 'de.inetsoftware.jwebassembly.emulator.PremainEmulator',
@@ -97,51 +99,62 @@ artifacts {
     archives javadocJar
 }
 
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['JWebAssemblyPublication']
-    publish = true
-    override = true
-    pkg {
-        repo = 'OSS'
-        userOrg = 'i-net-software'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/i-net-software'
-        name = group + '.' + archivesBaseName
-        version { 
-            released = new Date()
-        }
-    }
-}
 
+/****************************************
+ * Deploy to Sonatype
+ ****************************************/
 publishing {
     publications {
-        JWebAssemblyPublication(MavenPublication) {
+        JWebAssemblyApi(MavenPublication) {
             from components.java
             artifact sourcesJar
             artifact javadocJar
             artifactId archivesBaseName
-            pom.withXml {
-                def root = asNode()
-                root.appendNode('name', 'JWebAssembly-API')
-                root.appendNode('description', 'The API for using WebAssembly features in your Java classes.')
-                root.appendNode('url', 'https://github.com/i-net-software/JWebAssembly-API')
-
-                def node = root.appendNode('developers').appendNode( 'developer' )
-                node.appendNode( 'id', 'Horcrux7' )
-                node.appendNode( 'name', 'Volker Berlin' )
-                node.appendNode( 'email', 'vberlin@inetsoftware.de' )
-                node.appendNode( 'organization', 'i-net software' )
-                node.appendNode( 'organizationUrl', 'https://www.inetsoftware.de' )
-
-                node = root.appendNode('scm')
-                node.appendNode( 'connection', 'scm:git:git@github.com:i-net-software/JWebAssembly-API.git' )
-                node.appendNode( 'developerConnection', 'scm:git:git@github.com:i-net-software/JWebAssembly-API.git' )
-                node.appendNode( 'url', 'https://github.com/i-net-software/JWebAssembly-API' )
-
-                root.children().last()
+            pom {
+                name = 'JWebAssembly-API'
+                description = 'The API for using WebAssembly features in your Java classes.'
+                url = 'https://github.com/i-net-software/JWebAssembly-API'
+                developers {
+                    developer {
+                        id = 'Horcrux7'
+                        name = 'Volker Berlin'
+                        email = 'vberlin@inetsoftware.de'
+                        organization = 'i-net software'
+                        organizationUrl = 'https://www.inetsoftware.de'
+                    }
+                }
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git@github.com:i-net-software/JWebAssembly-API.git'
+                    developerConnection = 'scm:git:git@github.com:i-net-software/JWebAssembly-API.git'
+                    url = 'https://github.com/i-net-software/JWebAssembly-API'
+                }
             }
         }
+    }
+    repositories {
+        maven {
+            url 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+            if (project.hasProperty("ossrhUsername") ) {
+                credentials {
+                    username ossrhUsername
+                    password ossrhPassword
+                }
+            }
+        }
+    }
+}
+
+signing {
+    if (project.hasProperty("signing.keyId") ){
+       sign publishing.publications.JWebAssemblyApi
+
+        // does not create sha256 and sha512 checksums
+        System.setProperty('org.gradle.internal.publish.checksums.insecure', 'true' )
     }
 }
