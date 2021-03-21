@@ -23,11 +23,15 @@ dependencies {
     if( fxVersion > 8 ) { // version 8 is build into the OpenJDK
         // JavaFX depends the platform and JDK version
         def platform = getJavaFxPlatform()
-        def modules = ['javafx-base', 'javafx-graphics', 'javafx-web']
+        def modules = ['javafx-base', 'javafx-controls', 'javafx-graphics', 'javafx-media', 'javafx-web' ]
         for (String module : modules) {
             compileOnly 'org.openjfx:' + module + ':' + fxVersion + '.+:' + platform
+            testCompile 'org.openjfx:' + module + ':' + fxVersion + '.+:' + platform
         }
     }
+
+    testCompile     'junit:junit:+'
+    testCompile     'org.ow2.asm:asm:+'
 }
 
 sourceSets {
@@ -37,6 +41,14 @@ sourceSets {
         }
         resources {
             srcDir 'src'
+        }
+    }
+    test {
+        java {
+            srcDir 'test'
+        }
+        resources {
+            srcDir 'test'
         }
     }
 }
@@ -99,6 +111,16 @@ artifacts {
     archives javadocJar
 }
 
+test {
+    dependsOn 'jar'
+    jvmArgs "-javaagent:${jar.archivePath}"
+    testLogging {
+        showStandardStreams = true
+        showStackTraces = true
+        exceptionFormat = 'full'
+        events 'passed', 'skipped', 'failed'
+    }
+}
 
 /****************************************
  * Deploy to Sonatype

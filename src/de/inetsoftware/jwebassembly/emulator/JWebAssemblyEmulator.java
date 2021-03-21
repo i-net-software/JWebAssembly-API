@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Volker Berlin (i-net software)
+ * Copyright 2020 - 2021 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,13 @@
 package de.inetsoftware.jwebassembly.emulator;
 
 import java.net.URL;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import de.inetsoftware.jwebassembly.web.DOMString;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -45,30 +48,112 @@ public class JWebAssemblyEmulator {
     }
 
     /**
-     * Start the emulator, load the html page and call the given main method.
+     * Start the emulator from a resource file, load the html page and call the given main method.
      * 
      * @param htmlPage
      *             The resource of the html page that the WebAssembly contains.
      * @param main
      *            the executable with the main function
      */
-    public static void launch( @Nonnull String htmlPage, @Nonnull Runnable main ) {
-        launch( ClassLoader.getSystemResource( htmlPage ), main );
+    public static void launchResource( @Nonnull String htmlPage, @Nonnull Runnable main ) {
+        URL resource = ClassLoader.getSystemResource( htmlPage );
+        Objects.requireNonNull( resource, "Resource not found for: " + htmlPage );
+        launch( resource.toString(), null, main );
     }
 
     /**
-     * Start the emulator, load the html page and call the given main method.
+     * Start the emulator from a URL, load the html page and call the given main method.
      * 
      * @param htmlPageURL
      *             The URL of the html page that the WebAssembly contains.
      * @param main
      *            the executable with the main function
      */
-    public static void launch( @Nonnull URL htmlPageURL, @Nonnull Runnable main ) {
-        JavaFxApplication.url = htmlPageURL.toString();
-        JavaFxApplication.main = main;
+    public static void launchURL( @Nonnull URL htmlPageURL, @Nonnull Runnable main ) {
+        Objects.requireNonNull( htmlPageURL, "URL of HTML page is null." );
+        launch( htmlPageURL.toString(), null, main );
+    }
 
-        JavaFxApplication.launch( JavaFxApplication.class, new String[0] );
+    /**
+     * Start the emulator from a URL, load the html page and call the given main method.
+     * 
+     * @param content
+     *             The content of the html page that the WebAssembly contains.
+     * @param main
+     *            the executable with the main function
+     */
+    public static void launchContent( @Nonnull String content, @Nonnull Runnable main ) {
+        Objects.requireNonNull( content, "Content of HTML page is null." );
+        launch( null, content, main );
+    }
+
+    /**
+     * Start the emulator.
+     * 
+     * @param htmlPageURL
+     *            The URL of the html page that the WebAssembly contains.
+     * @param content
+     *            The content of the html page that the WebAssembly contains.
+     * @param main
+     *            the executable with the main function
+     */
+    private static void launch( String htmlPageURL, String content, @Nonnull Runnable main ) {
+        JavaFxApplication.url = htmlPageURL;
+        JavaFxApplication.content = content;
+        JavaFxApplication.main = main;
+        JavaFxApplication.error = null;
+
+        if( JavaFxApplication.stage == null ) {
+            //we start a new thread because JavaFX is blocking
+            Thread thread = new Thread() {
+                public void run() {
+                    try {
+                        JavaFxApplication.launch( JavaFxApplication.class, new String[0] );
+                    } catch( Throwable th ) {
+                        JavaFxApplication.error = th;
+                    }
+                }
+            };
+            thread.start();
+        }
+        while( JavaFxApplication.error == null && JavaFxApplication.stage == null ) {
+            try {
+                Thread.sleep( 1 );
+            } catch( InterruptedException th ) {
+                JavaFxApplication.error = th;
+            }
+        }
+        if( JavaFxApplication.error == null ) {
+            Platform.runLater( () -> {
+                try {
+                    JavaFxApplication.execute();
+                } catch( Throwable th ) {
+                    JavaFxApplication.error = th;
+                }
+            });
+        }
+        if( JavaFxApplication.error != null ) {
+            throwAny( JavaFxApplication.error );
+        }
+    }
+
+    /**
+     * Hide the emulator window
+     */
+    static void hide() {
+        Platform.setImplicitExit(false);
+        JavaFxApplication.stage.hide();
+    }
+
+    /**
+     * Throws any (checked) exception without in signature
+     * 
+     * @param e the exception
+     * @param <E> any Throwable
+     * @throws E any Throwable
+     */
+    static <E extends Throwable> void throwAny( Throwable e ) throws E {
+        throw (E)e;
     }
 
     /**
@@ -80,11 +165,17 @@ public class JWebAssemblyEmulator {
 
         private static String    url;
 
+        private static String    content;
+
         private static Runnable  main;
+
+        private static Stage     stage;
 
         private static WebEngine webEngine;
 
         private static JSObject  wasmImports;
+
+        private static Throwable error;
 
         /**
          * register a JavaScript function from a nation method with annotation in the wasmimports
@@ -115,6 +206,14 @@ public class JWebAssemblyEmulator {
         public static Object executeScript( String moduleName, String methodName, Object... args ) {
             JSObject module = (JSObject)wasmImports.getMember( moduleName );
 
+            if( args != null ) {
+                // JavaFX does not support our marker interface DOMString that 
+                for( int i = 0, length = args.length; i < length; i++ ) {
+                    if( args[i] instanceof DOMString ) {
+                        args[i] = args[i].toString();
+                    }
+                }
+            }
             return module.call( methodName, args );
         }
 
@@ -123,6 +222,13 @@ public class JWebAssemblyEmulator {
          */
         @Override
         public void start( Stage primaryStage ) throws Exception {
+            stage = primaryStage;
+        }
+
+        /**
+         * Load the page and run the start method
+         */
+        public static void execute() {
             // Create a WebView
             WebView browser = new WebView();
 
@@ -132,24 +238,36 @@ public class JWebAssemblyEmulator {
             Worker<Void> worker = webEngine.getLoadWorker();
             worker.stateProperty().addListener( ( obs, old, neww ) -> {
                 if( neww == Worker.State.SUCCEEDED ) {
-                    try {
-                        wasmImports = (JSObject)webEngine.executeScript( "wasmImports" );
-                    } catch( JSException e ) {
-                        webEngine.executeScript( "var wasmImports = {}" );
-                        wasmImports = (JSObject)webEngine.executeScript( "wasmImports" );
+                    if( wasmImports == null ) {
+                        try {
+                            wasmImports = (JSObject)webEngine.executeScript( "wasmImports" );
+                        } catch( JSException e ) {
+                            webEngine.executeScript( "var wasmImports = {}" );
+                            wasmImports = (JSObject)webEngine.executeScript( "wasmImports" );
+                        }
                     }
-                    main.run();
+                    try {
+                        main.run();
+                    } catch( Throwable th ) {
+                        error = th;
+                    }
+                    //primaryStage.close();
                 }
             } );
             // Load page
-            webEngine.load( url );
+            if( content != null ) {
+                webEngine.loadContent( content );
+            } else {
+                webEngine.load( url );
+            }
 
             VBox vBox = new VBox( browser );
             Scene scene = new Scene( vBox );
 
-            primaryStage.setTitle( "JWebAssembly Emulator" );
-            primaryStage.setScene( scene );
-            primaryStage.show();
+            stage.setTitle( "JWebAssembly Emulator" );
+            stage.setScene( scene );
+            stage.show();
         }
+
     }
 }
