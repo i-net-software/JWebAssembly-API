@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Volker Berlin (i-net software)
+ * Copyright 2020 - 2021 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ class PatchImportMethodVisitor extends MethodVisitor {
 
         // allocate an array for the method parameters 
         visitIntInsn( BIPUSH, args.length ); // count of arguments
-        visitTypeInsn( ANEWARRAY, Type.getDescriptor( Object.class ) );
+        visitTypeInsn( ANEWARRAY, Type.getInternalName( Object.class ) );
 
         // assign the method parameters to the array
         for( int i = 0; i < args.length; i++ ) {
