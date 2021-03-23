@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - 2020 Volker Berlin (i-net software)
+ * Copyright 2019 - 2021 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class Document extends Node {
      * @return The new Element
      */
     public HTMLElement createElement( String tagName ) {
-        return new HTMLElement( invoke( "createElement", tagName ) );
+        return HTMLElement.createWrapper( tagName, invoke( "createElement", tagName ) );
     }
 
     /**
