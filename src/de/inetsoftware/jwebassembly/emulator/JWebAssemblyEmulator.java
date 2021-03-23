@@ -17,6 +17,7 @@ package de.inetsoftware.jwebassembly.emulator;
 
 import java.net.URL;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 import javax.annotation.Nonnull;
 
@@ -124,13 +125,20 @@ public class JWebAssemblyEmulator {
             }
         }
         if( JavaFxApplication.error == null ) {
+            CountDownLatch launchLatch = new CountDownLatch( 1 );
             Platform.runLater( () -> {
                 try {
                     JavaFxApplication.execute();
                 } catch( Throwable th ) {
                     JavaFxApplication.error = th;
                 }
+                launchLatch.countDown();
             });
+            try {
+                launchLatch.await();
+            } catch( InterruptedException th ) {
+                JavaFxApplication.error = th;
+            }
         }
         if( JavaFxApplication.error != null ) {
             throwAny( JavaFxApplication.error );
