@@ -35,6 +35,8 @@ public class Document extends Node {
     /**
      * https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
      * 
+     * @param <T>
+     *            the return type
      * @param tagName
      *            type of element
      * @return The new Element

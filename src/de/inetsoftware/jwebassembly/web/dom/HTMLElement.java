@@ -35,12 +35,15 @@ public class HTMLElement extends Element {
     /**
      * Create a wrapper for a HTML peer element.
      * 
+     * @param <T>
+     *            the return type
      * @param tagName
      *            the tag name of the element
      * @param peer
      *            the native DOM object
      * @return the wrapper
      */
+    @SuppressWarnings( "unchecked" )
     static <T extends HTMLElement> T createWrapper( String tagName, Object peer ) {
         switch( tagName ) {
             case "a":
@@ -56,9 +59,5 @@ public class HTMLElement extends Element {
             default:
                 return (T)new HTMLElement( peer );
         }
-    }
-
-    public String tagName() {
-        return get( "tagName" );
     }
 }

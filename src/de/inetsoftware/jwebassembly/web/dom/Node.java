@@ -34,7 +34,7 @@ public class Node extends EventTarget {
     /** A CDATASection, such as &lt;!CDATA[[ … ]]&lt;. */
     public static final int CDATA_SECTION_NODE          = 4;
 
-    /** A ProcessingInstruction of an XML document, such as <?xml-stylesheet … ?&lt;. */
+    /** A ProcessingInstruction of an XML document, such as &lt;?xml-stylesheet … ?&lt;. */
     public static final int PROCESSING_INSTRUCTION_NODE = 7;
 
     /** A Comment node, such as &lt;!-- … --&lt;. */

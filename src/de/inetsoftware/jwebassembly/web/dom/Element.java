@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - 2020 Volker Berlin (i-net software)
+ * Copyright 2019 - 2021 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,4 +32,11 @@ public class Element extends Node {
         super( peer );
     }
 
+    /**
+     * https://developer.mozilla.org/en-US/docs/Web/API/Element/tagName
+     * @return the tag name
+     */
+    public String tagName() {
+        return get( "tagName" );
+    }
 }
