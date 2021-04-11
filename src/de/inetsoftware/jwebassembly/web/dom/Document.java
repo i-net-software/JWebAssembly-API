@@ -39,7 +39,7 @@ public class Document extends Node {
      *            type of element
      * @return The new Element
      */
-    public HTMLElement createElement( String tagName ) {
+    public <T extends HTMLElement> T createElement( String tagName ) {
         return HTMLElement.createWrapper( tagName, invoke( "createElement", tagName ) );
     }
 

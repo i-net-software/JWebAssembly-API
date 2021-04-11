@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - 2020 Volker Berlin (i-net software)
+ * Copyright 2019 - 2021 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,33 @@ package de.inetsoftware.jwebassembly.web.dom;
  */
 public class Node extends EventTarget {
 
+    /** An Element node like &lt;p&gt; or &lt;div&gt; */
+    public static final int ELEMENT_NODE                = 1;
+
+    /** An Attribute of an Element. */
+    public static final int ATTRIBUTE_NODE              = 2;
+
+    /** The actual Text inside an Element or Attr. */
+    public static final int TEXT_NODE                   = 3;
+
+    /** A CDATASection, such as &lt;!CDATA[[ … ]]&lt;. */
+    public static final int CDATA_SECTION_NODE          = 4;
+
+    /** A ProcessingInstruction of an XML document, such as <?xml-stylesheet … ?&lt;. */
+    public static final int PROCESSING_INSTRUCTION_NODE = 7;
+
+    /** A Comment node, such as &lt;!-- … --&lt;. */
+    public static final int COMMENT_NODE                = 8;
+
+    /** A Document node. */
+    public static final int DOCUMENT_NODE               = 9;
+
+    /** A DocumentType node, such as &lt;!DOCTYPE html&lt;. */
+    public static final int DOCUMENT_TYPE_NODE          = 10;
+
+    /** A DocumentFragment node. */
+    public static final int DOCUMENT_FRAGMENT_NODE      = 11;
+
     /**
      * Create a Java instance as wrapper of the JavaScript object.
      * 
@@ -30,6 +57,24 @@ public class Node extends EventTarget {
      */
     Node( Object peer ) {
         super( peer );
+    }
+
+    /**
+     * https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
+     * 
+     * @return the node type
+     */
+    public int nodeType() {
+        return get( "nodeType" );
+    }
+
+    /**
+     * https://developer.mozilla.org/en-US/docs/Web/API/Node/childNodes
+     * 
+     * @return list of chield nodes
+     */
+    public NodeList childNodes() {
+        return new NodeList( get( "childNodes" ) );
     }
 
     /**

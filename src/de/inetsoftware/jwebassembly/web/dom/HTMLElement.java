@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - 2020 Volker Berlin (i-net software)
+ * Copyright 2019 - 2021 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,18 +41,24 @@ public class HTMLElement extends Element {
      *            the native DOM object
      * @return the wrapper
      */
-    static HTMLElement createWrapper( String tagName, Object peer ) {
+    static <T extends HTMLElement> T createWrapper( String tagName, Object peer ) {
         switch( tagName ) {
             case "a":
-                return new HTMLAnchorElement( peer );
+                return (T)new HTMLAnchorElement( peer );
             case "area":
-                return new HTMLAreaElement( peer );
+                return (T)new HTMLAreaElement( peer );
+            case "button":
+                return (T)new HTMLButtonElement( peer );
             case "canvas":
-                return new HTMLCanvasElement( peer );
+                return (T)new HTMLCanvasElement( peer );
             case "div":
-                return new HTMLDivElement( peer );
+                return (T)new HTMLDivElement( peer );
             default:
-                return new HTMLElement( peer );
+                return (T)new HTMLElement( peer );
         }
+    }
+
+    public String tagName() {
+        return get( "tagName" );
     }
 }
