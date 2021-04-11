@@ -17,6 +17,8 @@ package de.inetsoftware.jwebassembly.emulator;
 
 import java.net.URL;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 import javax.annotation.Nonnull;
@@ -185,6 +187,8 @@ public class JWebAssemblyEmulator {
 
         private static Throwable error;
 
+        private static final Set<ImportAnnotation> ANNOTATIONS = ConcurrentHashMap.newKeySet();
+
         /**
          * register a JavaScript function from a nation method with annotation in the wasmimports
          * 
@@ -196,6 +200,7 @@ public class JWebAssemblyEmulator {
                 // A class with native code was loaded before launching, can occur with JUnit testing
                 JWebAssemblyEmulator.launch( url, content, () -> {} );
             }
+            ANNOTATIONS.add( anno );
             if( !Platform.isFxApplicationThread() ) {
                 // A class with native code was loaded outside of the event thread
                 Platform.runLater( () -> registerScript( anno ) );
@@ -256,13 +261,15 @@ public class JWebAssemblyEmulator {
             Worker<Void> worker = webEngine.getLoadWorker();
             worker.stateProperty().addListener( ( obs, old, neww ) -> {
                 if( neww == Worker.State.SUCCEEDED ) {
-                    if( wasmImports == null ) {
-                        try {
-                            wasmImports = (JSObject)webEngine.executeScript( "wasmImports" );
-                        } catch( JSException e ) {
-                            webEngine.executeScript( "var wasmImports = {}" );
-                            wasmImports = (JSObject)webEngine.executeScript( "wasmImports" );
-                        }
+                    try {
+                        wasmImports = (JSObject)webEngine.executeScript( "wasmImports" );
+                    } catch( JSException e ) {
+                        webEngine.executeScript( "var wasmImports = {}" );
+                        wasmImports = (JSObject)webEngine.executeScript( "wasmImports" );
+                    }
+                    // recreate the annotation in a new page
+                    for( ImportAnnotation anno : ANNOTATIONS ) {
+                        registerScript( anno );
                     }
                     try {
                         main.run();
