@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Volker Berlin (i-net software)
+ * Copyright 2020 - 2021 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,22 +47,27 @@ public class PremainEmulator {
         inst.addTransformer( new ClassFileTransformer() {
             @Override
             public byte[] transform( ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer ) throws IllegalClassFormatException {
-                ClassReader cr = new ClassReader( classfileBuffer );
-
-                // container for find Import annotations
-                Map<String, ImportAnnotation> annotations = new HashMap<>();
-                ImportAnnotationClassVisitor visitor = new ImportAnnotationClassVisitor( className, annotations );
-                cr.accept( visitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES );
-
-                // if there Import annotations then patch the code
-                if( !annotations.isEmpty() ) {
-                    ClassWriter cw = new ClassWriter( cr, ClassWriter.COMPUTE_FRAMES );
-                    ClassVisitor cv = new PatchImportClassVisitor( cw, annotations );
-                    cr.accept( cv, 0 );
-                    return cw.toByteArray();
-                } else {
-                    // all other classes return as original
-                    return classfileBuffer;
+                try {
+                    ClassReader cr = new ClassReader( classfileBuffer );
+    
+                    // container for find Import annotations
+                    Map<String, ImportAnnotation> annotations = new HashMap<>();
+                    ImportAnnotationClassVisitor visitor = new ImportAnnotationClassVisitor( className, annotations );
+                    cr.accept( visitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES );
+    
+                    // if there Import annotations then patch the code
+                    if( !annotations.isEmpty() ) {
+                        ClassWriter cw = new ClassWriter( cr, ClassWriter.COMPUTE_FRAMES );
+                        ClassVisitor cv = new PatchImportClassVisitor( cw, annotations );
+                        cr.accept( cv, 0 );
+                        return cw.toByteArray();
+                    } else {
+                        // all other classes return as original
+                        return classfileBuffer;
+                    }
+                } catch( Throwable th) {
+                    th.printStackTrace();
+                    throw th;
                 }
             }
         } );
