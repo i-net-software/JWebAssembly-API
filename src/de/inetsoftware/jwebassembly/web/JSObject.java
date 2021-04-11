@@ -97,6 +97,31 @@ public class JSObject {
     }
 
     /**
+     * Native set a JavaScript property value by name.
+     * 
+     * @param peer
+     *            the JavaScript object
+     * @param propName
+     *            the name of the property as DOMString
+     * @param value
+     *            the value of the property
+     */
+    @Import( module = WEB, js = "(o,p,v)=>o[p]=v" )
+    private static native void set0( Object peer, @Nonnull DOMString propName, Object value );
+
+    /**
+     * Set the value of a property of this object.
+     * 
+     * @param propName
+     *            the name of the property
+     * @param value
+     *            the value of the property
+     */
+    protected void set( @Nonnull String propName, String value ) {
+        set0( peer, domString( propName ), domString( value ) );
+    }
+
+    /**
      * Native invoke a JavaScript method with one parameter.
      * 
      * @param <T>
