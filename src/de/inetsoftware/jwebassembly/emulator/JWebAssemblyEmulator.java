@@ -192,6 +192,16 @@ public class JWebAssemblyEmulator {
          *            the annotation
          */
         static void registerScript( @Nonnull ImportAnnotation anno ) {
+            if( wasmImports == null ) {
+                // A class with native code was loaded before launching, can occur with JUnit testing
+                JWebAssemblyEmulator.launch( url, content, () -> {} );
+            }
+            if( !Platform.isFxApplicationThread() ) {
+                // A class with native code was loaded outside of the event thread
+                Platform.runLater( () -> registerScript( anno ) );
+                return;
+            }
+
             Object obj = wasmImports.getMember( anno.module );
             if( "undefined".equals( obj ) ) {
                 webEngine.executeScript( "wasmImports." + anno.module + " = {}" );
