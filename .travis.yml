@@ -1,8 +1,16 @@
-dist: xenial
+dist: jammy
 services:
   - xvfb
 
 language: java
+
+before_install:
+  # Download and install Gradle 6.9.3
+  - wget https://services.gradle.org/distributions/gradle-6.9.3-bin.zip
+  - unzip -qq gradle-6.9.3-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-6.9.3
+  - export PATH=$GRADLE_HOME/bin:$PATH
+  - gradle -v
 
 deploy:
   # deploy to Github
