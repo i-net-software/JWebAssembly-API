@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Volker Berlin (i-net software)
+ * Copyright 2020 - 2023 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,14 @@ class ReplacementForThread {
             current = new Thread( "main" );
         }
         return current;
+    }
+
+    /**
+     * Replacement for yield().
+     */
+    @Replace( "java/lang/Thread.yield()V" )
+    static void yield() {
+        // nothing
     }
 
     /**
