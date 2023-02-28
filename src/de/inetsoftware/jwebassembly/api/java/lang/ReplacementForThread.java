@@ -16,6 +16,7 @@
 package de.inetsoftware.jwebassembly.api.java.lang;
 
 import de.inetsoftware.jwebassembly.api.annotation.Replace;
+import de.inetsoftware.jwebassembly.api.annotation.WasmTextCode;
 
 /**
  * Replacement methods for the class java.lang.Thread.
@@ -39,10 +40,34 @@ class ReplacementForThread {
     @Replace( "java/lang/Thread.currentThread()Ljava/lang/Thread;" )
     static Thread currentThread() {
         if( current == null ) {
-            current = new Thread( "main" );
+            createCurrentThread( "main" );
         }
         return current;
     }
+
+    /**
+     * Create the main thread instance. The code is like:
+     * <code> 
+     * current = new Thread( new threadGroup(), name );
+     * </code>
+     * but it set the current value before the constructor is invoked
+     * @param name the string of the thread name
+     */
+    @WasmTextCode( "struct.new_default java/lang/ThreadGroup " // create object ThreadGroup
+                    + "local.tee 1 " // ThreadGroup
+                    + "call $java/lang/ThreadGroup.<init>()V " // invoke default, private constructor
+                    + "struct.new_default java/lang/Thread " // create object Thread
+                    + "local.tee 2 " // Thread
+                    + "global.set $de/inetsoftware/jwebassembly/api/java/lang/ReplacementForThread.current " // set the currentThread before calling the constructor
+                    + "local.get 2 " // Thread
+                    + "i32.const 5 " //
+                    + "struct.set java/lang/Thread priority " // set priority to 5
+                    + "local.get 2 " // Thread
+                    + "local.get 1 " // ThreadGroup
+                    + "local.get 0 " // name
+                    + "call $java/lang/Thread.<init>(Ljava/lang/ThreadGroup;Ljava/lang/String;)V " // invoke Thread constructor
+    )
+    private static native void createCurrentThread( String name );
 
     /**
      * Replacement for yield().
