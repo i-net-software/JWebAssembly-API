@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Volker Berlin (i-net software)
+ * Copyright 2022 - 2023 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,5 +30,20 @@ public class ReplacementForObjectInputStream {
     @Replace( "java/io/ObjectInputStream.readObject()Ljava/lang/Object;" )
     Object readObject() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Replacement for readObject(Class). Java serializing required reflection which is currently not supported.
+     */
+    @Replace( "java/io/ObjectInputStream.readObject(Ljava/lang/Class;)Ljava/lang/Object;" )
+    private final Object readObject(Class<?> type) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Replacement for filterCheck(Class,int). Java serializing required reflection which is currently not supported.
+     */
+    @Replace( "java/io/ObjectInputStream.filterCheck(Ljava/lang/Class;I)V" )
+    private void filterCheck( Class<?> clazz, int arrayLength ) {
     }
 }

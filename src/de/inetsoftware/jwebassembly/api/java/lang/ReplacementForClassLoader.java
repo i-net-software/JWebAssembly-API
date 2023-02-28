@@ -16,6 +16,8 @@
 package de.inetsoftware.jwebassembly.api.java.lang;
 
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.Enumeration;
 
@@ -90,5 +92,21 @@ class ReplacementForClassLoader {
     @Replace( "java/lang/ClassLoader.findLoadedClass(Ljava/lang/String;)Ljava/lang/Class;" )
     Class<?> findLoadedClass(String name) {
         return null;
+    }
+
+    /**
+     * Replacement for defineClass(String,byte[],int,int,ProtectionDomain);
+     */
+    @Replace( "java/lang/ClassLoader.defineClass(Ljava/lang/String;[BIILjava/security/ProtectionDomain;)Ljava/lang/Class;" )
+    protected final Class<?> defineClass( String name, byte[] b, int off, int len, ProtectionDomain protectionDomain ) {
+        throw new NoClassDefFoundError();
+    }
+
+    /**
+     * Replacement for defineClass(String,ByteBuffer,ProtectionDomain);
+     */
+    @Replace( "java/lang/ClassLoader.defineClass(Ljava/lang/String;Ljava/nio/ByteBuffer;Ljava/security/ProtectionDomain;)Ljava/lang/Class;" )
+    protected final Class<?> defineClass( String name, ByteBuffer b, ProtectionDomain protectionDomain ) {
+        throw new NoClassDefFoundError();
     }
 }
