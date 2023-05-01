@@ -33,7 +33,15 @@ class ReplacementForAccessibleObject {
     }
 
     /**
-     * Replacement for static code.
+     * Replacement for logIfOpenedForIllegalAccess().
+     */
+    @Replace( "java/lang/reflect/AccessibleObject.logIfOpenedForIllegalAccess(Ljava/lang/Class;Ljava/lang/Class;)V" )
+    private void logIfOpenedForIllegalAccess( Class<?> caller, Class<?> declaringClass ) {
+        // nothing
+    }
+
+    /**
+     * Replacement for logIfExportedForIllegalAccess().
      */
     @Replace( "java/lang/reflect/AccessibleObject.logIfExportedForIllegalAccess(Ljava/lang/Class;Ljava/lang/Class;)V" )
     private void logIfExportedForIllegalAccess( Class<?> caller, Class<?> declaringClass ) {

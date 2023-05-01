@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 - 2022 Volker Berlin (i-net software)
+ * Copyright 2020 - 2023 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,14 @@ class ReplacementForClassLoader {
      */
     @Replace( "java/lang/ClassLoader.getSystemClassLoader()Ljava/lang/ClassLoader;" )
     public static ClassLoader getSystemClassLoader() {
+        return null;
+    }
+
+    /**
+     * Replacement for getPlatformClassLoader();
+     */
+    @Replace( "java/lang/ClassLoader.getPlatformClassLoader()Ljava/lang/ClassLoader;" )
+    public static ClassLoader getPlatformClassLoader() {
         return null;
     }
 

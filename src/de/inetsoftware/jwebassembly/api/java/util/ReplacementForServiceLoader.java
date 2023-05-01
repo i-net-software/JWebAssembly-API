@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Volker Berlin (i-net software)
+ * Copyright 2022 - 2023 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,14 @@ class ReplacementForServiceLoader {
      */
     @Replace( "java/util/ServiceLoader$ModuleServicesLookupIterator.iteratorFor(Ljava/lang/ClassLoader;)Ljava/util/Iterator;" )
     private Iterator iteratorFor(ClassLoader loader) {
+        return Collections.emptyIterator();
+    }
+
+    /**
+     * Replacement for {@link ServiceLoader.iterator()}
+     */
+    @Replace( "java/util/ServiceLoader.iterator()Ljava/util/Iterator;" )
+    public Iterator iterator() {
         return Collections.emptyIterator();
     }
 }
