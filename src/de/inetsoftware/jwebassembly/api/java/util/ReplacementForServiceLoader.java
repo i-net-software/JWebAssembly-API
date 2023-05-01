@@ -18,6 +18,7 @@ package de.inetsoftware.jwebassembly.api.java.util;
 import java.util.Collections;
 import java.util.Iterator;
 
+import de.inetsoftware.jwebassembly.api.annotation.Partial;
 import de.inetsoftware.jwebassembly.api.annotation.Replace;
 
 /**
@@ -25,21 +26,42 @@ import de.inetsoftware.jwebassembly.api.annotation.Replace;
  * 
  * @author Volker Berlin
  */
-class ReplacementForServiceLoader {
+@Partial( "java/util/ServiceLoader" )
+class ReplacementForServiceLoader<S> implements Iterable<S> {
 
     /**
      * Replacement for {@link ServiceLoader.iteratorFor(ClassLoader)}
      */
     @Replace( "java/util/ServiceLoader$ModuleServicesLookupIterator.iteratorFor(Ljava/lang/ClassLoader;)Ljava/util/Iterator;" )
-    private Iterator iteratorFor(ClassLoader loader) {
+    private Iterator iteratorFor( ClassLoader loader ) {
         return Collections.emptyIterator();
     }
 
     /**
      * Replacement for {@link ServiceLoader.iterator()}
      */
-    @Replace( "java/util/ServiceLoader.iterator()Ljava/util/Iterator;" )
     public Iterator iterator() {
         return Collections.emptyIterator();
+    }
+
+    /**
+     * Replacement for {@link ServiceLoader.load(Class,ClassLoader)}
+     */
+    static <S> ReplacementForServiceLoader<S> load( Class<S> service, ClassLoader loader ) {
+        return new ReplacementForServiceLoader();
+    }
+
+    /**
+     * Replacement for {@link ServiceLoader.load(Class)}
+     */
+    static <S> ReplacementForServiceLoader<S> load( Class<S> service ) {
+        return new ReplacementForServiceLoader();
+    }
+
+    /**
+     * Replacement for {@link ServiceLoader.loadInstalled(Class)}
+     */
+    static <S> ReplacementForServiceLoader<S> loadInstalled( Class<S> service ) {
+        return new ReplacementForServiceLoader();
     }
 }

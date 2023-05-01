@@ -124,4 +124,12 @@ class ReplacementForThread {
     static void start() {
         throw new UnsupportedOperationException();
     }
+
+    /**
+     * Replacement for isAlive().
+     */
+    @Replace( "java/lang/Thread.isAlive()Z" )
+    boolean isAlive() {
+        return false;
+    }
 }
