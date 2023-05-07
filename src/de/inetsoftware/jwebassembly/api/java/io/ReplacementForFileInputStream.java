@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Volker Berlin (i-net software)
+ * Copyright 2022 - 2023 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,38 @@
  */
 package de.inetsoftware.jwebassembly.api.java.io;
 
-import de.inetsoftware.jwebassembly.api.annotation.Replace;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+
+import de.inetsoftware.jwebassembly.api.annotation.Partial;
 
 /**
  * Replacement methods for the class java.io.FileInputStream.
  * 
  * @author Volker Berlin
  */
+@Partial( "java/io/FileInputStream" )
 class ReplacementForFileInputStream {
+
+    /**
+     * Replacement for constructor.
+     */
+    ReplacementForFileInputStream( File file ) throws FileNotFoundException {
+        throw new FileNotFoundException();
+    }
+
+    /**
+     * Replacement for constructor.
+     */
+    ReplacementForFileInputStream( FileDescriptor fdObj ) throws FileNotFoundException {
+        throw new FileNotFoundException();
+    }
 
     /**
      * Replacement for native init code.
      */
-    @Replace( "java/io/FileInputStream.initIDs()V" )
-    private static void init() {
+    private static void initIDs() {
         // nothing
     }
 }
