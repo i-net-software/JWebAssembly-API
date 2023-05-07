@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Volker Berlin (i-net software)
+ * Copyright 2020 - 2023 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package de.inetsoftware.jwebassembly.api.java.lang;
+
+import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import de.inetsoftware.jwebassembly.api.annotation.Replace;
 
@@ -54,5 +57,29 @@ class ReplacementForThrowable {
     @Replace( "java/lang/Throwable.getStackTraceElement(I)Ljava/lang/StackTraceElement;" )
     StackTraceElement getStackTraceElement(int index) {
         return null;
+    }
+
+    /**
+     * Replacement for printStackTrace(PrintStream)
+     */
+    @Replace( "java/lang/Throwable.printStackTrace(Ljava/io/PrintStream;)V" )
+    void printStackTrace( PrintStream s ) {
+        s.println( this );
+    }
+
+    /**
+     * Replacement for printStackTrace(PrintWriter)
+     */
+    @Replace( "java/lang/Throwable.printStackTrace(Ljava/io/PrintWriter;)V" )
+    void printStackTrace( PrintWriter s ) {
+        s.println( this );
+    }
+
+    /**
+     * Replacement for getStackTrace()
+     */
+    @Replace( "java/lang/Throwable.getStackTrace()[Ljava/lang/StackTraceElement;" )
+    StackTraceElement[] getStackTrace() {
+        return new StackTraceElement[0];
     }
 }
