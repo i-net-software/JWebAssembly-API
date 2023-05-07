@@ -18,6 +18,7 @@ package de.inetsoftware.jwebassembly.api.java.io;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import de.inetsoftware.jwebassembly.api.annotation.Partial;
 
@@ -41,6 +42,48 @@ class ReplacementForFileInputStream {
      */
     ReplacementForFileInputStream( FileDescriptor fdObj ) throws FileNotFoundException {
         throw new FileNotFoundException();
+    }
+
+    /**
+     * Replacement for read(). Stops compiling via reference of InputStream.
+     */
+    int read() {
+        return -1;
+    }
+
+    /**
+     * Replacement for read(). Stops compiling via reference of InputStream.
+     */
+    int read( byte b[] ) {
+        return -1;
+    }
+
+    /**
+     * Replacement for read(). Stops compiling via reference of InputStream.
+     */
+    int read( byte b[], int off, int len ) {
+        return -1;
+    }
+
+    /**
+     * Replacement for available(). Stops compiling via reference of InputStream.
+     */
+    int available() {
+        return 0;
+    }
+
+    /**
+     * Replacement for skip(). Stops compiling via reference of InputStream.
+     */
+    long skip( long n ) {
+        return 0;
+    }
+
+    /**
+     * Replacement for close(). Stops compiling via reference of InputStream.
+     */
+    void close() {
+        // nothing
     }
 
     /**
