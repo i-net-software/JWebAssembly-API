@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 - 2022 Volker Berlin (i-net software)
+ * Copyright 2020 - 2026 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,4 +41,16 @@ public @interface Partial {
      * @return the signature
      */
     String value();
+
+    /**
+     * The minimum Java version (inclusive) for which this partial replacement should be applied. The default 0 means no constraint.
+     * @return the minimum version
+     */
+    int minVersion() default 0;
+
+    /**
+     * The maximum Java version (inclusive) for which this partial replacement should be applied. The default 0 means no constraint.
+     * @return the maximum version
+     */
+    int maxVersion() default 0;
 }

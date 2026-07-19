@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 - 2022 Volker Berlin (i-net software)
+ * Copyright 2019 - 2026 Volker Berlin (i-net software)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,20 @@ import java.lang.annotation.Target;
 public @interface Replace {
 
     /**
-     * The full signature of a method that should be replaced like "java/lang/Throwable.printStackTrace()V"
+     * The full signature of a method that should be replaced like "java/lang/Throwable.printStackTrace()V" or the name of the class like "java/util/concurrent/ConcurrentHashMap"
      * @return the signature
      */
     String value();
+
+    /**
+     * The minimum Java version (inclusive) for which this replacement should be applied. The default 0 means no constraint.
+     * @return the minimum version
+     */
+    int minVersion() default 0;
+
+    /**
+     * The maximum Java version (inclusive) for which this replacement should be applied. The default 0 means no constraint.
+     * @return the maximum version
+     */
+    int maxVersion() default 0;
 }
